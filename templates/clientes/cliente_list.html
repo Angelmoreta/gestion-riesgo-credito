@@ -1,0 +1,131 @@
+{% extends 'clientes/base_cliente.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Lista de Clientes' %}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Clientes' %}</li>
+{% endblock %}
+
+{% block actions %}
+    <a href="{% url 'clientes:crear' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> {% trans 'Nuevo Cliente' %}
+    </a>
+{% endblock %}
+
+{% block cliente_content %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="mb-4">
+                <form method="get" class="row g-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="{% trans 'Buscar por nombre, apellido o identificación...' %}" value="{{ search }}">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="fas fa-search"></i> {% trans 'Buscar' %}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{% url 'clientes:lista' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync-alt me-1"></i> {% trans 'Restablecer' %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            {% if clientes %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>{% trans 'Nombres' %}</th>
+                                <th>{% trans 'Identificación' %}</th>
+                                <th>{% trans 'Teléfono' %}</th>
+                                <th>{% trans 'Email' %}</th>
+                                <th class="text-end">{% trans 'Acciones' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cliente in clientes %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'clientes:detalle' cliente.pk %}">
+                                            {{ cliente.apellidos }}, {{ cliente.nombres }}
+                                        </a>
+                                    </td>
+                                    <td>{{ cliente.get_tipo_identificacion_display }}: {{ cliente.numero_identificacion }}</td>
+                                    <td>{{ cliente.telefono }}</td>
+                                    <td>{{ cliente.email|default:'-' }}</td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'clientes:editar' cliente.pk %}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="{% trans 'Editar' %}">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'clientes:eliminar' cliente.pk %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="{% trans 'Eliminar' %}">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if is_paginated %}
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1{% if search %}&q={{ search }}{% endif %}">&laquo; {% trans 'Primera' %}</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search %}&q={{ search }}{% endif %}">{% trans 'Anterior' %}</a>
+                                </li>
+                            {% endif %}
+
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    {% blocktrans with number=page_obj.number num_pages=page_obj.paginator.num_pages %}
+                                        Página {{ number }} de {{ num_pages }}
+                                    {% endblocktrans %}
+                                </span>
+                            </li>
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search %}&q={{ search }}{% endif %}">{% trans 'Siguiente' %}</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search %}&q={{ search }}{% endif %}">{% trans 'Última' %} &raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-users fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">{% trans 'No se encontraron clientes' %}</h5>
+                    <p class="text-muted">{% trans 'Comienza agregando un nuevo cliente' %}</p>
+                    <a href="{% url 'clientes:crear' %}" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus me-2"></i> {% trans 'Agregar Cliente' %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Inicializar tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Gestión de Riesgo de Crédito{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h1 class="h3 mb-0 text-center">Sistema de Gestión de Riesgo de Crédito</h1>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Gestión de Clientes</h5>
+                                <p class="card-text">Administre la información de sus clientes de manera eficiente.</p>
+                                <a href="{% url 'clientes:lista' %}" class="btn btn-outline-primary">Ver Clientes</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                                <h5 class="card-title">Análisis de Riesgo</h5>
+                                <p class="card-text">Evalúe el riesgo crediticio de sus clientes.</p>
+                                <a href="{% url 'creditos:analisis_lista' %}" class="btn btn-outline-success">Realizar Análisis</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-file-alt fa-3x text-info mb-3"></i>
+                                <h5 class="card-title">Reportes</h5>
+                                <p class="card-text">Genere reportes detallados de análisis de riesgo.</p>
+                                <a href="#" class="btn btn-outline-info">Ver Reportes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

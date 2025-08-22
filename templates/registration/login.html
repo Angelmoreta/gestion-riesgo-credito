@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión - Gestión de Riesgo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h3 class="text-center mb-0">Iniciar Sesión</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-white text-center">
+                <p class="mb-0">¿No tienes una cuenta? <a href="#">Contacta al administrador</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

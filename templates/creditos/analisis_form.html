@@ -1,0 +1,498 @@
+{% extends 'creditos/base_credito.html' %}
+{% load i18n crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}{% trans 'Editar Análisis de Crédito' %}{% else %}{% trans 'Nuevo Análisis de Crédito' %}{% endif %}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}{% trans 'Editar' %}{% else %}{% trans 'Nuevo' %}{% endif %}</li>
+{% endblock %}
+
+{% block creditos_content %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post" id="analisisForm" data-clientes-url="{% url 'creditos:api_buscar_clientes' %}">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="mb-3">{% trans 'Datos del Cliente' %}</h5>
+                        
+                        {% if not form.instance.pk %}
+                            <div class="mb-3">
+                                <label class="form-label">{% trans 'Buscar Cliente' %}</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="buscarCliente" 
+                                           placeholder="{% trans 'Nombre, apellido o identificación' %}">
+                                    <button class="btn btn-outline-secondary" type="button" id="btnBuscarCliente">
+                                        <i class="fas fa-search"></i> {% trans 'Buscar' %}
+                                    </button>
+                                </div>
+                                <div id="resultadosCliente" class="mt-2"></div>
+                            </div>
+                        {% endif %}
+                        
+                        <div id="infoCliente" class="mb-4 p-3 bg-light rounded" 
+                             {% if not form.instance.pk %}style="display: none;"{% endif %}>
+                            {% if form.instance.pk %}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">{{ form.instance.cliente.get_nombre_completo }}</h6>
+                                    <a href="{% url 'clientes:detalle' form.instance.cliente.pk %}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-user me-1"></i> {% trans 'Ver Cliente' %}
+                                    </a>
+                                </div>
+                                <p class="mb-1 text-muted">
+                                    {{ form.instance.cliente.get_tipo_identificacion_display }}: {{ form.instance.cliente.numero_identificacion }}
+                                </p>
+                                <p class="mb-1">
+                                    <i class="fas fa-phone me-2"></i> {{ form.instance.cliente.telefono|default:'-' }}
+                                </p>
+                                <p class="mb-0">
+                                    <i class="fas fa-envelope me-2"></i> {{ form.instance.cliente.email|default:'-' }}
+                                </p>
+                            {% else %}
+                                <div id="clienteSeleccionado"></div>
+                            {% endif %}
+                            <input type="hidden" name="cliente" id="id_cliente" 
+                                   value="{% if form.instance.pk %}{{ form.instance.cliente.pk }}{% endif %}">
+                        </div>
+                        
+                        <h5 class="mb-3 mt-4">{% trans 'Información del Crédito' %}</h5>
+                        
+                        {{ form.tipo_credito|as_crispy_field }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.monto_solicitado|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.plazo_meses|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        {{ form.tasa_interes|as_crispy_field }}
+                        
+                        <div class="alert alert-info mt-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <i class="fas fa-info-circle fa-2x mt-1"></i>
+                                </div>
+                                <div>
+                                    <h6>{% trans 'Cuota Mensual Estimada' %}</h6>
+                                    <p class="mb-0" id="cuotaMensual">
+                                        <span class="h4 text-primary">$0.00</span>
+                                        <small class="text-muted">{% trans 'Esta es una estimación basada en los datos ingresados.' %}</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5 class="mb-3">{% trans 'Situación Financiera' %}</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.ingresos_mensuales|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.gastos_mensuales|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        {{ form.deuda_actual|as_crispy_field }}
+                        
+                        <div class="alert alert-warning mt-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <i class="fas fa-exclamation-triangle fa-2x mt-1"></i>
+                                </div>
+                                <div>
+                                    <h6>{% trans 'Capacidad de Pago' %}</h6>
+                                    <p class="mb-0" id="capacidadPago">
+                                        <span class="h5">$0.00</span>
+                                        <small class="text-muted d-block">
+                                            {% trans '30% del ingreso disponible (ingresos - gastos)' %}
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-3 mt-4">{% trans 'Evaluación de Riesgo' %}</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">{% trans 'Puntaje de Crédito' %}</label>
+                            <div class="d-flex align-items-center">
+                                <div class="progress flex-grow-1 me-3" style="height: 20px;">
+                                    <div id="puntajeBarra" class="progress-bar" 
+                                         role="progressbar" 
+                                         style="width: 0%" 
+                                         aria-valuenow="0" 
+                                         aria-valuemin="300" 
+                                         aria-valuemax="850"></div>
+                                </div>
+                                <span id="puntajeValor" class="fw-bold">-</span>
+                            </div>
+                            <small id="nivelRiesgo" class="text-muted">{% trans 'No evaluado' %}</small>
+                        </div>
+                        
+                        {{ form.historial_crediticio|as_crispy_field }}
+                        
+                        {{ form.observaciones|as_crispy_field }}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% if form.instance.pk %}{% url 'creditos:analisis_detalle' form.instance.pk %}{% else %}{% url 'creditos:analisis_lista' %}{% endif %}" 
+                       class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> {% trans 'Cancelar' %}
+                    </a>
+                    <div class="btn-group">
+                        <button type="submit" name="guardar" value="1" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> {% trans 'Guardar' %}
+                        </button>
+                        <button type="submit" name="calcular" value="1" class="btn btn-outline-primary">
+                            <i class="fas fa-calculator me-1"></i> {% trans 'Calcular Puntaje' %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Variables globales
+        let clienteSeleccionado = null;
+        
+        // Elementos del DOM
+        const form = document.getElementById('analisisForm');
+        const buscarCliente = document.getElementById('buscarCliente');
+        const btnBuscarCliente = document.getElementById('btnBuscarCliente');
+        const resultadosCliente = document.getElementById('resultadosCliente');
+        const infoCliente = document.getElementById('infoCliente');
+        const clienteSeleccionadoDiv = document.getElementById('clienteSeleccionado');
+        const idCliente = document.getElementById('id_cliente');
+        
+        // Campos del formulario
+        const montoSolicitado = document.getElementById('id_monto_solicitado');
+        const plazoMeses = document.getElementById('id_plazo_meses');
+        const tasaInteres = document.getElementById('id_tasa_interes');
+        const ingresosMensuales = document.getElementById('id_ingresos_mensuales');
+        const gastosMensuales = document.getElementById('id_gastos_mensuales');
+        const deudaActual = document.getElementById('id_deuda_actual');
+        
+        // Elementos de resultados
+        const cuotaMensual = document.getElementById('cuotaMensual');
+        const capacidadPago = document.getElementById('capacidadPago');
+        const puntajeBarra = document.getElementById('puntajeBarra');
+        const puntajeValor = document.getElementById('puntajeValor');
+        const nivelRiesgo = document.getElementById('nivelRiesgo');
+        
+        // Función para formatear moneda
+        function formatearMoneda(valor) {
+            return new Intl.NumberFormat('es-ES', {
+                style: 'decimal',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(valor);
+        }
+        
+        // Función para calcular la cuota mensual
+        function calcularCuotaMensual() {
+            const monto = parseFloat(montoSolicitado.value) || 0;
+            const plazo = parseInt(plazoMeses.value) || 0;
+            const tasa = parseFloat(tasaInteres.value) || 0;
+            
+            if (monto <= 0 || plazo <= 0 || tasa < 0) {
+                return 0;
+            }
+            
+            const tasaMensual = (tasa / 100) / 12;
+            const factor = Math.pow(1 + tasaMensual, plazo);
+            const cuota = monto * (tasaMensual * factor) / (factor - 1);
+            
+            return isFinite(cuota) ? cuota : 0;
+        }
+        
+        // Función para calcular la capacidad de pago
+        function calcularCapacidadPago() {
+            const ingresos = parseFloat(ingresosMensuales.value) || 0;
+            const gastos = parseFloat(gastosMensuales.value) || 0;
+            const capacidad = (ingresos - gastos) * 0.3; // 30% del ingreso disponible
+            
+            return Math.max(0, capacidad);
+        }
+        
+        // Función para actualizar la interfaz con los cálculos
+        function actualizarCalculos() {
+            // Actualizar cuota mensual
+            const cuota = calcularCuotaMensual();
+            document.querySelector('#cuotaMensual span').textContent = `$${formatearMoneda(cuota)}`;
+            
+            // Actualizar capacidad de pago
+            const capacidad = calcularCapacidadPago();
+            document.querySelector('#capacidadPago span').textContent = `$${formatearMoneda(capacidad)}`;
+            
+            // Resaltar si la cuota supera la capacidad de pago
+            const capacidadElement = document.querySelector('#capacidadPago');
+            if (cuota > capacidad && cuota > 0 && capacidad > 0) {
+                capacidadElement.classList.add('text-danger');
+                capacidadElement.classList.remove('text-success');
+            } else if (cuota > 0 && capacidad > 0) {
+                capacidadElement.classList.remove('text-danger');
+                capacidadElement.classList.add('text-success');
+            } else {
+                capacidadElement.classList.remove('text-danger', 'text-success');
+            }
+        }
+        
+        // Función para simular el cálculo del puntaje de crédito
+        function simularPuntajeCredito() {
+            // Esta es una simulación simple. En una aplicación real, esto se haría en el servidor
+            // con un algoritmo más sofisticado que considere más factores.
+            
+            const ingresos = parseFloat(ingresosMensuales.value) || 0;
+            const gastos = parseFloat(gastosMensuales.value) || 0;
+            const deuda = parseFloat(deudaActual.value) || 0;
+            const monto = parseFloat(montoSolicitado.value) || 0;
+            const plazo = parseInt(plazoMeses.value) || 0;
+            
+            // Puntaje base (300-850)
+            let puntaje = 600;
+            
+            // Ajustes basados en ingresos vs gastos
+            if (ingresos > 0) {
+                const ratioGastos = gastos / ingresos;
+                if (ratioGastos < 0.3) {
+                    puntaje += 100; // Excelente manejo de deuda
+                } else if (ratioGastos < 0.5) {
+                    puntaje += 50; // Buen manejo de deuda
+                } else if (ratioGastos > 0.8) {
+                    puntaje -= 100; // Mala relación deuda/ingresos
+                }
+            }
+            
+            // Ajustes basados en historial crediticio (simulado)
+            // En una aplicación real, esto vendría de una fuente de datos de historial crediticio
+            const historial = document.getElementById('id_historial_crediticio').value.toLowerCase();
+            if (historial.includes('bueno') || historial.includes('excelente')) {
+                puntaje += 50;
+            } else if (historial.includes('malo') || historial.includes('mala') || historial.includes('incumplimiento')) {
+                puntaje -= 100;
+            }
+            
+            // Ajustes basados en monto solicitado vs ingresos
+            if (ingresos > 0) {
+                const ratioMonto = monto / (ingresos * 12); // Deuda / Ingreso anual
+                if (ratioMonto < 0.3) {
+                    puntaje += 50;
+                } else if (ratioMonto > 1) {
+                    puntaje -= 100;
+                }
+            }
+            
+            // Asegurar que el puntaje esté dentro del rango 300-850
+            puntaje = Math.max(300, Math.min(850, puntaje));
+            
+            return Math.round(puntaje);
+        }
+        
+        // Función para actualizar la visualización del puntaje
+        function actualizarPuntaje() {
+            const puntaje = simularPuntajeCredito();
+            const porcentaje = ((puntaje - 300) / (850 - 300)) * 100;
+            
+            // Actualizar la barra de progreso
+            puntajeBarra.style.width = `${porcentaje}%`;
+            puntajeBarra.setAttribute('aria-valuenow', puntaje);
+            puntajeValor.textContent = puntaje;
+            
+            // Actualizar el nivel de riesgo
+            let nivel, clase;
+            if (puntaje >= 800) {
+                nivel = '{% trans 'Excelente' %}';
+                clase = 'bg-success';
+            } else if (puntaje >= 700) {
+                nivel = '{% trans 'Bueno' %}';
+                clase = 'bg-success';
+            } else if (puntaje >= 600) {
+                nivel = '{% trans 'Aceptable' %}';
+                clase = 'bg-warning';
+            } else {
+                nivel = '{% trans 'Riesgoso' %}';
+                clase = 'bg-danger';
+            }
+            
+            // Actualizar clases de la barra
+            puntajeBarra.className = 'progress-bar ' + clase;
+            nivelRiesgo.textContent = nivel;
+            
+            return puntaje;
+        }
+        
+        // Event listeners para los campos del formulario
+        [montoSolicitado, plazoMeses, tasaInteres, ingresosMensuales, gastosMensuales, deudaActual].forEach(field => {
+            field.addEventListener('input', function() {
+                actualizarCalculos();
+                actualizarPuntaje();
+            });
+        });
+        
+        // Event listener para el botón de búsqueda de cliente
+        if (btnBuscarCliente) {
+            btnBuscarCliente.addEventListener('click', function() {
+                const query = buscarCliente.value.trim();
+                
+                if (query.length < 3) {
+                    resultadosCliente.innerHTML = `
+                        <div class="alert alert-warning">
+                            {% trans 'Ingrese al menos 3 caracteres para buscar' %}
+                        </div>`;
+                    return;
+                }
+                
+                // Mostrar indicador de carga
+                resultadosCliente.innerHTML = `
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">{% trans 'Buscando...' %}</span>
+                        </div>
+                        <p class="mt-2 mb-0">{% trans 'Buscando clientes...' %}</p>
+                    </div>`;
+                
+                // Hacer la petición AJAX para buscar clientes
+                fetch(`/api/clientes/buscar/?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            let html = '<div class="list-group">';
+                            data.forEach(cliente => {
+                                html += `
+                                    <a href="#" class="list-group-item list-group-item-action" 
+                                       data-id="${cliente.id}">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">${cliente.nombres} ${cliente.apellidos}</h6>
+                                            <small>${cliente.tipo_identificacion_display}: ${cliente.numero_identificacion}</small>
+                                        </div>
+                                        <p class="mb-1">
+                                            <i class="fas fa-phone me-2"></i>${cliente.telefono || 'N/A'}
+                                        </p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-envelope me-2"></i>${cliente.email || 'N/A'}
+                                        </small>
+                                    </a>`;
+                            });
+                            html += '</div>';
+                            resultadosCliente.innerHTML = html;
+                            
+                            // Agregar event listeners a los resultados
+                            document.querySelectorAll('#resultadosCliente .list-group-item').forEach(item => {
+                                item.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    const clienteId = this.getAttribute('data-id');
+                                    const cliente = data.find(c => c.id == clienteId);
+                                    
+                                    if (cliente) {
+                                        // Mostrar información del cliente seleccionado
+                                        clienteSeleccionadoDiv.innerHTML = `
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="mb-0">${cliente.nombres} ${cliente.apellidos}</h6>
+                                                <button type="button" class="btn-close" id="quitarCliente"></button>
+                                            </div>
+                                            <p class="mb-1 text-muted">
+                                                ${cliente.tipo_identificacion_display}: ${cliente.numero_identificacion}
+                                            </p>
+                                            <p class="mb-1">
+                                                <i class="fas fa-phone me-2"></i> ${cliente.telefono || '-'}
+                                            </p>
+                                            <p class="mb-0">
+                                                <i class="fas fa-envelope me-2"></i> ${cliente.email || '-'}
+                                            </p>`;
+                                        
+                                        // Actualizar el campo oculto con el ID del cliente
+                                        idCliente.value = cliente.id;
+                                        
+                                        // Mostrar el panel de información del cliente
+                                        infoCliente.style.display = 'block';
+                                        
+                                        // Ocultar resultados de búsqueda
+                                        resultadosCliente.innerHTML = '';
+                                        buscarCliente.value = '';
+                                        
+                                        // Agregar evento para quitar la selección
+                                        document.getElementById('quitarCliente').addEventListener('click', function(e) {
+                                            e.stopPropagation();
+                                            clienteSeleccionadoDiv.innerHTML = '';
+                                            idCliente.value = '';
+                                            infoCliente.style.display = 'none';
+                                        });
+                                        
+                                        // Actualizar campos del formulario con datos del cliente si están disponibles
+                                        if (cliente.ingreso_mensual) {
+                                            ingresosMensuales.value = cliente.ingreso_mensual;
+                                            actualizarCalculos();
+                                        }
+                                    }
+                                });
+                            });
+                        } else {
+                            resultadosCliente.innerHTML = `
+                                <div class="alert alert-warning">
+                                    {% trans 'No se encontraron clientes que coincidan con la búsqueda' %}
+                                </div>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al buscar clientes:', error);
+                        resultadosCliente.innerHTML = `
+                            <div class="alert alert-danger">
+                                {% trans 'Ocurrió un error al buscar clientes. Por favor, intente de nuevo.' %}
+                            </div>`;
+                    });
+            });
+        }
+        
+        // Inicializar cálculos al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            actualizarCalculos();
+            actualizarPuntaje();
+            
+            // Si ya hay un cliente seleccionado (en modo edición), mostrarlo
+            if (idCliente.value) {
+                infoCliente.style.display = 'block';
+            }
+        });
+        
+        // Manejar el envío del formulario
+        form.addEventListener('submit', function(e) {
+            // Validar que se haya seleccionado un cliente (solo para nuevo análisis)
+            if (!form.instance?.pk && !idCliente.value) {
+                e.preventDefault();
+                alert('{% trans 'Debe seleccionar un cliente para continuar' %}');
+                return false;
+            }
+            
+            // Validar que la cuota no supere la capacidad de pago
+            const cuota = calcularCuotaMensual();
+            const capacidad = calcularCapacidadPago();
+            
+            if (cuota > capacidad) {
+                const confirmar = confirm(
+                    '{% trans 'La cuota mensual estimada supera la capacidad de pago del cliente. ¿Desea continuar de todos modos?' %}'
+                );
+                
+                if (!confirmar) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+            
+            return true;
+        });
+    });
+</script>
+{% endblock %}

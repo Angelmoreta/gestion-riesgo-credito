@@ -1,0 +1,198 @@
+{% extends 'clientes/base_cliente.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Detalle del Cliente' %}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'clientes:lista' %}">{% trans 'Clientes' %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ cliente.get_nombre_completo }}</li>
+{% endblock %}
+
+{% block actions %}
+    <div class="btn-group" role="group">
+        <a href="{% url 'clientes:editar' cliente.pk %}" class="btn btn-outline-primary">
+            <i class="fas fa-edit me-1"></i> {% trans 'Editar' %}
+        </a>
+        <a href="{% url 'clientes:eliminar' cliente.pk %}" class="btn btn-outline-danger">
+            <i class="fas fa-trash-alt me-1"></i> {% trans 'Eliminar' %}
+        </a>
+    </div>
+{% endblock %}
+
+{% block cliente_content %}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">{% trans 'Información Personal' %}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt>{% trans 'Identificación' %}</dt>
+                        <dd>{{ cliente.get_tipo_identificacion_display }}: {{ cliente.numero_identificacion }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Nombre Completo' %}</dt>
+                        <dd>{{ cliente.get_nombre_completo }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Fecha de Nacimiento' %}</dt>
+                        <dd>{{ cliente.fecha_nacimiento|date:"d/m/Y" }} ({{ cliente.get_edad }} {% trans 'años' %})</dd>
+                        
+                        <dt class="mt-3">{% trans 'Lugar de Nacimiento' %}</dt>
+                        <dd>{{ cliente.lugar_nacimiento|default:'-' }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Estado Civil' %}</dt>
+                        <dd>{{ cliente.get_estado_civil_display }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">{% trans 'Información de Contacto' %}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt>{% trans 'Dirección' %}</dt>
+                        <dd>{{ cliente.direccion|linebreaksbr }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Teléfono' %}</dt>
+                        <dd>{{ cliente.telefono|default:'-' }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Celular' %}</dt>
+                        <dd>{{ cliente.celular|default:'-' }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Correo Electrónico' %}</dt>
+                        <dd>{{ cliente.email|default:'-' }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">{% trans 'Información Laboral' %}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt>{% trans 'Ocupación' %}</dt>
+                        <dd>{{ cliente.ocupacion|default:'-' }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Lugar de Trabajo' %}</dt>
+                        <dd>{{ cliente.lugar_trabajo|default:'-'|linebreaksbr }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Ingreso Mensual' %}</dt>
+                        <dd>${{ cliente.ingreso_mensual|default:'0'|floatformat:2 }}</dd>
+                        
+                        <dt class="mt-3">{% trans 'Fecha de Registro' %}</dt>
+                        <dd>{{ cliente.fecha_registro|date:"d/m/Y H:i" }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">{% trans 'Referencias Personales' %}</h5>
+                    <a href="{% url 'clientes:agregar_referencia' cliente.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-plus me-1"></i> {% trans 'Agregar' %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if cliente.referencias_personales.all %}
+                        <div class="list-group">
+                            {% for referencia in cliente.referencias_personales.all %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ referencia.nombre_completo }}</h6>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'clientes:editar_referencia' referencia.pk %}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'clientes:eliminar_referencia' referencia.pk %}" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <p class="mb-1">
+                                        <span class="badge bg-light text-dark">{{ referencia.parentesco }}</span>
+                                    </p>
+                                    <p class="mb-1"><i class="fas fa-phone me-2"></i>{{ referencia.telefono }}</p>
+                                    <small class="text-muted">{{ referencia.direccion|truncatewords:10 }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-address-card fa-3x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">{% trans 'No hay referencias personales registradas' %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">{% trans 'Documentos' %}</h5>
+                    <a href="{% url 'clientes:subir_documento' cliente.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-upload me-1"></i> {% trans 'Subir' %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if cliente.documentos.all %}
+                        <div class="list-group">
+                            {% for documento in cliente.documentos.all %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ documento.get_tipo_documento_display }}</h6>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ documento.archivo.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'clientes:eliminar_documento' documento.pk %}" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <p class="mb-1 small text-muted">
+                                        {{ documento.fecha_subida|date:"d/m/Y H:i" }}
+                                    </p>
+                                    {% if documento.notas %}
+                                        <p class="mb-0 small">{{ documento.notas|truncatewords:10 }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">{% trans 'No hay documentos subidos' %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if cliente.notas %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">{% trans 'Notas Adicionales' %}</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ cliente.notas|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

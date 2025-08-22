@@ -1,0 +1,298 @@
+{% extends 'creditos/base_credito.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans 'Detalle del Análisis de Crédito' %}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Detalle' %}</li>
+{% endblock %}
+
+{% block actions %}
+    <div class="btn-group" role="group">
+        <a href="{% url 'creditos:analisis_editar' analisis.pk %}" class="btn btn-outline-primary">
+            <i class="fas fa-edit me-1"></i> {% trans 'Editar' %}
+        </a>
+        <a href="{% url 'creditos:analisis_eliminar' analisis.pk %}" class="btn btn-outline-danger">
+            <i class="fas fa-trash-alt me-1"></i> {% trans 'Eliminar' %}
+        </a>
+        
+        {% if analisis.estado == 'PEN' %}
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#accionAnalisisModal">
+                <i class="fas fa-clipboard-check me-1"></i> {% trans 'Tomar Acción' %}
+            </button>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block creditos_content %}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">{% trans 'Información del Cliente' %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="avatar-lg mx-auto mb-3">
+                            <div class="avatar-title bg-soft-primary text-primary rounded-circle font-24">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <h5>{{ analisis.cliente.get_nombre_completo }}</h5>
+                        <p class="text-muted mb-0">{{ analisis.cliente.get_tipo_identificacion_display }}: {{ analisis.cliente.numero_identificacion }}</p>
+                        <a href="{% url 'clientes:detalle' analisis.cliente.pk %}" class="btn btn-sm btn-outline-primary mt-2">
+                            <i class="fas fa-user me-1"></i> {% trans 'Ver Cliente' %}
+                        </a>
+                    </div>
+                    <hr>
+                    <dl class="mb-0">
+                        <dt>{% trans 'Teléfono' %}</dt>
+                        <dd>{{ analisis.cliente.telefono|default:'-' }}</dd>
+                        
+                        <dt class="mt-2">{% trans 'Correo Electrónico' %}</dt>
+                        <dd>{{ analisis.cliente.email|default:'-' }}</dd>
+                        
+                        <dt class="mt-2">{% trans 'Dirección' %}</dt>
+                        <dd>{{ analisis.cliente.direccion|linebreaksbr|default:'-' }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">{% trans 'Detalles del Análisis' %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="mb-0">
+                                <dt>{% trans 'Estado' %}</dt>
+                                <dd>
+                                    <span class="badge {% if analisis.estado == 'APR' %}bg-success{% elif analisis.estado == 'REC' %}bg-danger{% elif analisis.estado == 'PEN' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                        {{ analisis.get_estado_display }}
+                                    </span>
+                                </dd>
+                                
+                                <dt class="mt-3">{% trans 'Tipo de Crédito' %}</dt>
+                                <dd>{{ analisis.get_tipo_credito_display }}</dd>
+                                
+                                <dt class="mt-3">{% trans 'Monto Solicitado' %}</dt>
+                                <dd>${{ analisis.monto_solicitado|intcomma }}</dd>
+                                
+                                <dt class="mt-3">{% trans 'Plazo' %}</dt>
+                                <dd>{{ analisis.plazo_meses }} {% trans 'meses' %}</dd>
+                                
+                                <dt class="mt-3">{% trans 'Tasa de Interés Anual' %}</dt>
+                                <dd>{{ analisis.tasa_interes }}%</dd>
+                            </dl>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <dl class="mb-0">
+                                <dt>{% trans 'Cuota Mensual Estimada' %}</dt>
+                                <dd class="h4 text-primary">${{ analisis.cuota_mensual_estimada|floatformat:2|intcomma }}</dd>
+                                
+                                <dt class="mt-3">{% trans 'Capacidad de Pago' %}</dt>
+                                <dd>${{ analisis.capacidad_pago|floatformat:2|intcomma }} <small class="text-muted">(30% del ingreso disponible)</small></dd>
+                                
+                                <dt class="mt-3">{% trans 'Puntaje de Crédito' %}</dt>
+                                <dd>
+                                    {% if analisis.puntaje_credito %}
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 me-3" style="height: 20px;">
+                                                <div class="progress-bar {% if analisis.puntaje_credito >= 700 %}bg-success{% elif analisis.puntaje_credito >= 600 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                                     role="progressbar" 
+                                                     style="width: {{ analisis.puntaje_credito|div:10 }}%" 
+                                                     aria-valuenow="{{ analisis.puntaje_credito }}" 
+                                                     aria-valuemin="300" 
+                                                     aria-valuemax="850"></div>
+                                            </div>
+                                            <span class="fw-bold">{{ analisis.puntaje_credito }}</span>
+                                        </div>
+                                        <small class="text-muted">{{ analisis.nivel_riesgo }}</small>
+                                    {% else %}
+                                        <span class="text-muted">{% trans 'No evaluado' %}</span>
+                                    {% endif %}
+                                </dd>
+                                
+                                <dt class="mt-3">{% trans 'Analista' %}</dt>
+                                <dd>{{ analisis.usuario.get_full_name|default:analisis.usuario.username }}</dd>
+                                
+                                <dt class="mt-3">{% trans 'Fecha de Análisis' %}</dt>
+                                <dd>{{ analisis.fecha_analisis|date:"d/m/Y H:i" }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    
+                    {% if analisis.observaciones %}
+                        <div class="mt-4">
+                            <h6>{% trans 'Observaciones' %}</h6>
+                            <div class="p-3 bg-light rounded">
+                                {{ analisis.observaciones|linebreaks }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">{% trans 'Documentos Adjuntos' %}</h5>
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#subirDocumentoModal">
+                        <i class="fas fa-plus me-1"></i> {% trans 'Agregar Documento' %}
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% if analisis.documentos.all %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{% trans 'Tipo' %}</th>
+                                        <th>{% trans 'Archivo' %}</th>
+                                        <th>{% trans 'Fecha' %}</th>
+                                        <th class="text-end">{% trans 'Acciones' %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for doc in analisis.documentos.all %}
+                                        <tr>
+                                            <td>{{ doc.get_tipo_documento_display }}</td>
+                                            <td>
+                                                <a href="{{ doc.archivo.url }}" target="_blank">
+                                                    <i class="fas fa-file-pdf text-danger me-1"></i> {{ doc.archivo.name|slice:":-4"|slice:"-30:" }}...
+                                                </a>
+                                            </td>
+                                            <td>{{ doc.fecha_subida|date:"d/m/Y" }}</td>
+                                            <td class="text-end">
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{{ doc.archivo.url }}" 
+                                                       class="btn btn-sm btn-outline-primary" 
+                                                       target="_blank"
+                                                       data-bs-toggle="tooltip" 
+                                                       title="{% trans 'Ver documento' %}">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{% url 'creditos:eliminar_documento' doc.pk %}" 
+                                                       class="btn btn-sm btn-outline-danger"
+                                                       data-bs-toggle="tooltip" 
+                                                       title="{% trans 'Eliminar' %}">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">{% trans 'No hay documentos adjuntos' %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para subir documento -->
+    <div class="modal fade" id="subirDocumentoModal" tabindex="-1" aria-labelledby="subirDocumentoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="subirDocumentoModalLabel">{% trans 'Subir Documento' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'creditos:subir_documento' analisis.pk %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="tipo_documento" class="form-label">{% trans 'Tipo de Documento' %}</label>
+                            <select class="form-select" id="tipo_documento" name="tipo_documento" required>
+                                <option value="" selected disabled>{% trans 'Seleccione un tipo' %}</option>
+                                {% for value, label in documento_form.fields.tipo_documento.choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="archivo" class="form-label">{% trans 'Archivo' %}</label>
+                            <input class="form-control" type="file" id="archivo" name="archivo" required>
+                            <div class="form-text">
+                                {% trans 'Formatos permitidos: PDF, DOC, DOCX, JPG, JPEG, PNG. Tamaño máximo: 10MB' %}
+                            </div>
+                        </div>
+                        <div class="mb-0">
+                            <label for="notas" class="form-label">{% trans 'Notas' %} <small class="text-muted">({% trans 'opcional' %})</small></label>
+                            <textarea class="form-control" id="notas" name="notas" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancelar' %}</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-1"></i> {% trans 'Subir' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para tomar acción sobre el análisis -->
+    {% if analisis.estado == 'PEN' %}
+    <div class="modal fade" id="accionAnalisisModal" tabindex="-1" aria-labelledby="accionAnalisisModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accionAnalisisModalLabel">{% trans 'Tomar Acción sobre el Análisis' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'creditos:accion_analisis' analisis.pk %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label d-block">{% trans 'Seleccione una acción' %}</label>
+                            {% for radio in accion_form.estado %}
+                                <div class="form-check mb-2">
+                                    {{ radio.tag }}
+                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                        {{ radio.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-0">
+                            <label for="comentario" class="form-label">
+                                {% trans 'Comentario' %} <small class="text-muted">({% trans 'opcional' %})</small>
+                            </label>
+                            <textarea class="form-control" id="comentario" name="comentario" rows="3" placeholder="{% trans 'Ingrese un comentario sobre la decisión...' %}"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancelar' %}</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> {% trans 'Guardar Cambios' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Inicializar tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

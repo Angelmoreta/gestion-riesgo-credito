@@ -1,0 +1,163 @@
+{% extends 'creditos/base_credito.html' %}
+{% load i18n humanize %}
+
+{% block title %}{% trans 'Análisis de Crédito' %}{% endblock %}
+
+{% block actions %}
+    <a href="{% url 'creditos:analisis_crear' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> {% trans 'Nuevo Análisis' %}
+    </a>
+{% endblock %}
+
+{% block creditos_content %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="mb-4">
+                <form method="get" class="row g-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" 
+                                   placeholder="{% trans 'Buscar por nombre, apellido o identificación...' %}" 
+                                   value="{{ search }}">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="fas fa-search"></i> {% trans 'Buscar' %}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{% url 'creditos:analisis_lista' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync-alt me-1"></i> {% trans 'Restablecer' %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            {% if analisis %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>{% trans 'Cliente' %}</th>
+                                <th>{% trans 'Tipo' %}</th>
+                                <th>{% trans 'Monto' %}</th>
+                                <th>{% trans 'Plazo' %}</th>
+                                <th>{% trans 'Tasa' %}</th>
+                                <th>{% trans 'Estado' %}</th>
+                                <th class="text-end">{% trans 'Acciones' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for analisis in analisis %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'creditos:analisis_detalle' analisis.pk %}">
+                                            {{ analisis.cliente.get_nombre_completo }}
+                                        </a>
+                                        <div class="small text-muted">
+                                            {{ analisis.cliente.get_tipo_identificacion_display }}: {{ analisis.cliente.numero_identificacion }}
+                                        </div>
+                                    </td>
+                                    <td>{{ analisis.get_tipo_credito_display }}</td>
+                                    <td>${{ analisis.monto_solicitado|intcomma }}</td>
+                                    <td>{{ analisis.plazo_meses }} {% trans 'meses' %}</td>
+                                    <td>{{ analisis.tasa_interes }}%</td>
+                                    <td>
+                                        <span class="badge {% if analisis.estado == 'APR' %}bg-success{% elif analisis.estado == 'REC' %}bg-danger{% elif analisis.estado == 'PEN' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ analisis.get_estado_display }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'creditos:analisis_detalle' analisis.pk %}" 
+                                               class="btn btn-sm btn-outline-primary" 
+                                               data-bs-toggle="tooltip" 
+                                               title="{% trans 'Ver detalles' %}">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'creditos:analisis_editar' analisis.pk %}" 
+                                               class="btn btn-sm btn-outline-secondary" 
+                                               data-bs-toggle="tooltip" 
+                                               title="{% trans 'Editar' %}">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'creditos:analisis_eliminar' analisis.pk %}" 
+                                               class="btn btn-sm btn-outline-danger" 
+                                               data-bs-toggle="tooltip" 
+                                               title="{% trans 'Eliminar' %}">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if is_paginated %}
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1{% if search %}&q={{ search }}{% endif %}">
+                                        &laquo; {% trans 'Primera' %}
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" 
+                                       href="?page={{ page_obj.previous_page_number }}{% if search %}&q={{ search }}{% endif %}">
+                                        {% trans 'Anterior' %}
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    {% blocktrans with number=page_obj.number num_pages=page_obj.paginator.num_pages %}
+                                        Página {{ number }} de {{ num_pages }}
+                                    {% endblocktrans %}
+                                </span>
+                            </li>
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" 
+                                       href="?page={{ page_obj.next_page_number }}{% if search %}&q={{ search }}{% endif %}">
+                                        {% trans 'Siguiente' %}
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" 
+                                       href="?page={{ page_obj.paginator.num_pages }}{% if search %}&q={{ search }}{% endif %}">
+                                        {% trans 'Última' %} &raquo;
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-file-invoice-dollar fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">{% trans 'No se encontraron análisis de crédito' %}</h5>
+                    <p class="text-muted">{% trans 'Comienza creando un nuevo análisis de crédito' %}</p>
+                    <a href="{% url 'creditos:analisis_crear' %}" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus me-2"></i> {% trans 'Nuevo Análisis' %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Inicializar tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

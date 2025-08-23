@@ -33,6 +33,9 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 # Comma-separated list, e.g. "localhost,127.0.0.1,tuusuario.pythonanywhere.com"
 ALLOWED_HOSTS = [h.strip() for h in os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
 
+# CSRF trusted origins (comma-separated full origins), e.g. "https://1803893195.pythonanywhere.com"
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
+
 
 # Application definition
 

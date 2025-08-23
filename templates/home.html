@@ -1,49 +1,225 @@
 {% extends 'base.html' %}
 
-{% block title %}Inicio - Gestión de Riesgo de Crédito{% endblock %}
+{% block title %}Modelización de Riesgo de Crédito · IRB, Basilea IV y EBA{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-10">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white">
-                <h1 class="h3 mb-0 text-center">Sistema de Gestión de Riesgo de Crédito</h1>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center">
-                                <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                                <h5 class="card-title">Gestión de Clientes</h5>
-                                <p class="card-text">Administre la información de sus clientes de manera eficiente.</p>
-                                <a href="{% url 'clientes:lista' %}" class="btn btn-outline-primary">Ver Clientes</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center">
-                                <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
-                                <h5 class="card-title">Análisis de Riesgo</h5>
-                                <p class="card-text">Evalúe el riesgo crediticio de sus clientes.</p>
-                                <a href="{% url 'creditos:analisis_lista' %}" class="btn btn-outline-success">Realizar Análisis</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center">
-                                <i class="fas fa-file-alt fa-3x text-info mb-3"></i>
-                                <h5 class="card-title">Reportes</h5>
-                                <p class="card-text">Genere reportes detallados de análisis de riesgo.</p>
-                                <a href="#" class="btn btn-outline-info">Ver Reportes</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Hero -->
+<section class="py-5 py-lg-6 bg-gradient" style="background: linear-gradient(135deg,#0d6efd 0%,#6610f2 100%); color:#fff;">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <h1 class="display-5 fw-bold mb-3">Modelización de Riesgo de Crédito</h1>
+        <p class="lead mb-4">IRB, Basilea IV y Directrices EBA. Metodologías modernas para PD, LGD, EAD y validación regulatoria con casos prácticos.</p>
+        <div class="d-flex gap-3">
+          <a href="#objetivos" class="btn btn-light btn-lg text-primary fw-semibold"><i class="fa-solid fa-bullseye me-2"></i>Ver Objetivos</a>
+          <a href="#beneficios" class="btn btn-outline-light btn-lg"><i class="fa-solid fa-star me-2"></i>Beneficios</a>
         </div>
+      </div>
+      <div class="col-lg-5 text-center">
+        <i class="fa-solid fa-chart-line" style="font-size: 6rem; opacity: .9;"></i>
+      </div>
     </div>
-</div>
+  </div>
+</section>
+
+<!-- Objetivos -->
+<section id="objetivos" class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-4">
+      <span class="badge bg-primary-subtle text-primary border border-primary">Objetivos</span>
+      <h2 class="mt-3">Qué aprenderás</h2>
+      <p class="text-muted">Directivas UE sobre IRB, calibración de PD/LD/EAD, validación y mejores prácticas.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fa-solid fa-scale-balanced text-primary fs-3 me-3"></i>
+              <h5 class="mb-0">Directivas UE e impacto</h5>
+            </div>
+            <p class="mb-0">Explicación del enfoque avanzado IRB y análisis coste–beneficio de las directivas en entidades financieras.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fa-solid fa-sliders text-success fs-3 me-3"></i>
+              <h5 class="mb-0">Calibración de PD</h5>
+            </div>
+            <p class="mb-0">Metodologías de vanguardia para carteras retail y low default portfolio.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fa-solid fa-square-root-variable text-info fs-3 me-3"></i>
+              <h5 class="mb-0">Modelos PD, LGD y EAD</h5>
+            </div>
+            <p class="mb-0">Amplio repertorio de modelos econométricos para estimación robusta de parámetros de riesgo.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fa-solid fa-house-chimney text-warning fs-3 me-3"></i>
+              <h5 class="mb-0">LGD en LDP e Hipotecarias</h5>
+            </div>
+            <p class="mb-0">Enfoques específicos para carteras de baja morosidad y préstamos hipotecarios.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fa-solid fa-shield-halved text-danger fs-3 me-3"></i>
+              <h5 class="mb-0">Validación IRB</h5>
+            </div>
+            <p class="mb-0">Metodologías de validación y cambios regulatorios con casos de estudio y alternativas.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fa-solid fa-magnifying-glass-chart text-secondary fs-3 me-3"></i>
+              <h5 class="mb-0">Stress Testing y Transiciones</h5>
+            </div>
+            <p class="mb-0">Modelización del stress testing de PD/LGD en retail y construcción de matrices de transición.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fa-solid fa-clipboard-check text-primary fs-3 me-3"></i>
+              <h5 class="mb-0">Buenas prácticas IRB</h5>
+            </div>
+            <p class="mb-0">Implementación y gestión del enfoque IRB Avanzado en entidades financieras.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fa-solid fa-ranking-star text-success fs-3 me-3"></i>
+              <h5 class="mb-0">Scoring y Rating</h5>
+            </div>
+            <p class="mb-0">Metodologías recientes para construir herramientas de credit scoring y credit rating.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Beneficios -->
+<section id="beneficios" class="py-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <span class="badge bg-success-subtle text-success border border-success">Beneficios</span>
+      <h2 class="mt-3">Por qué este programa</h2>
+      <p class="text-muted">Cumplimiento regulatorio, optimización de capital y mejores decisiones.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="d-flex align-items-start">
+          <i class="fa-solid fa-book-open-reader text-success fs-3 me-3 mt-1"></i>
+          <div>
+            <h5>Comprensión de Basilea IV</h5>
+            <p class="mb-0">Estándares y requisitos del enfoque IRB y su integración en el marco regulatorio.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex align-items-start">
+          <i class="fa-solid fa-chart-pie text-primary fs-3 me-3 mt-1"></i>
+          <div>
+            <h5>Mejor gestión del riesgo</h5>
+            <p class="mb-0">Aplicación correcta de IRB para decisiones más informadas y efectivas.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex align-items-start">
+          <i class="fa-solid fa-piggy-bank text-warning fs-3 me-3 mt-1"></i>
+          <div>
+            <h5>Optimización de capital</h5>
+            <p class="mb-0">Cálculo eficiente de requerimientos de capital para mejorar rentabilidad y estabilidad.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex align-items-start">
+          <i class="fa-solid fa-shield text-danger fs-3 me-3 mt-1"></i>
+          <div>
+            <h5>Cumplimiento regulatorio</h5>
+            <p class="mb-0">Preparación para cumplir con Basilea IV evitando sanciones o riesgos reputacionales.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex align-items-start">
+          <i class="fa-solid fa-user-graduate text-info fs-3 me-3 mt-1"></i>
+          <div>
+            <h5>Actualización profesional</h5>
+            <p class="mb-0">Mantente al día en prácticas, regulación y desarrolla tu carrera.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex align-items-start">
+          <i class="fa-solid fa-chess-knight text-secondary fs-3 me-3 mt-1"></i>
+          <div>
+            <h5>Mejor estrategia</h5>
+            <p class="mb-0">Planificación y ejecución que fortalece la posición competitiva y la sostenibilidad.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Para quién es -->
+<section id="audiencia" class="py-5 bg-light">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <h2>¿Para quién es este curso?</h2>
+        <p class="text-muted">Responsables, analistas y consultores de riesgos que desarrollan o auditan modelos IRB. Recomendable base en estadística; no es imprescindible programar.</p>
+        <ul class="list-unstyled mt-3">
+          <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i>Riesgo de crédito y cumplimiento</li>
+          <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i>Modelización PD, LGD, EAD</li>
+          <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i>Validación IRB y stress testing</li>
+        </ul>
+      </div>
+      <div class="col-lg-6 text-center">
+        <i class="fa-solid fa-people-group" style="font-size:5rem;"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5" style="background:linear-gradient(135deg,#20c997 0%,#0d6efd 100%); color:#fff;">
+  <div class="container text-center">
+    <h2 class="mb-3">¿Listo para comenzar?</h2>
+    <p class="lead mb-4">Explora clientes, crea análisis de riesgo y gestiona tu pipeline con las mejores prácticas IRB.</p>
+    <a href="{% url 'creditos:analisis_lista' %}" class="btn btn-light btn-lg text-primary fw-semibold">
+      <i class="fa-solid fa-diagram-project me-2"></i>Ir a Análisis de Riesgo
+    </a>
+  </div>
+</section>
 {% endblock %}

@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 # Import views
 from . import views
@@ -37,6 +38,14 @@ urlpatterns = [
     # Apps
     path('clientes/', include('clientes.urls', namespace='clientes')),
     path('creditos/', include('creditos.urls', namespace='creditos')),
+    
+    # API
+    path('api/consent/', views.log_consent, name='api_consent'),
+    
+    # Legal
+    path('legal/aviso-legal/', TemplateView.as_view(template_name='legal/aviso_legal.html'), name='aviso_legal'),
+    path('legal/politica-privacidad/', TemplateView.as_view(template_name='legal/politica_privacidad.html'), name='politica_privacidad'),
+    path('legal/politica-cookies/', TemplateView.as_view(template_name='legal/politica_cookies.html'), name='politica_cookies'),
 ]
 
 # Serve media files in development

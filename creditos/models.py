@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 
 from clientes.models import Cliente
 
@@ -243,5 +244,33 @@ class DocumentoAnalisis(models.Model):
     
     def get_absolute_url(self):
         return self.archivo.url if self.archivo else '#'
+
+
+class ConsentLog(models.Model):
+    ACTION_CHOICES = [
+        ("accept", "Accept"),
+        ("reject", "Reject"),
+        ("update", "Update"),
+    ]
+    VERSION = "v1"
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    analytics = models.BooleanField(default=False)
+    consent_version = models.CharField(max_length=10, default=VERSION)
+
+    ip = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+
+    user = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return f"Consent {self.action} (analytics={self.analytics}) at {self.created_at:%Y-%m-%d %H:%M}"
+
+    @staticmethod
+    def default_expiry():
+        return timezone.now() + timezone.timedelta(days=365)
+
 
 # Create your models here.

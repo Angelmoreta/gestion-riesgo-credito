@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 import json
 
 # Create your views here.
@@ -13,6 +14,13 @@ def home(request):
         'title': 'Inicio',
     }
     return render(request, 'home.html', context)
+
+@login_required
+def curso(request):
+    context = {
+        'title': 'Curso de Riesgo de Crédito',
+    }
+    return render(request, 'curso.html', context)
 
 @csrf_exempt
 def log_consent(request):

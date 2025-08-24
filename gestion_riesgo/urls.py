@@ -28,9 +28,12 @@ urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
     
-    # Authentication
+    # Auth
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
+    # Curso protegido
+    path('curso/', views.curso, name='curso'),
     
     # Home
     path('', views.home, name='home'),

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Curso de Riesgo de Crédito{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="h3 mb-0">Curso de Riesgo de Crédito</h1>
+          <div>
+            <span class="me-2 text-muted">Hola, {{ request.user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-sm">Salir</a>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h2 class="h5">Contenido</h2>
+            <ul class="mb-0">
+              <li>Introducción al riesgo de crédito</li>
+              <li>Métricas clave: PD, LGD, EAD</li>
+              <li>Modelos de scoring y validación</li>
+              <li>Gestión de cartera y provisiones</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="alert alert-info">Esta sección es visible solo para usuarios autenticados.</div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

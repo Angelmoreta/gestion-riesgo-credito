@@ -45,6 +45,10 @@ urlpatterns = [
     # API
     path('api/consent/', views.log_consent, name='api_consent'),
     
+    # Libro privado
+    path('libro/', views.libro_portada, name='libro_portada'),
+    path('libro/intro-riesgo-credito/', views.libro_riesgo_credito, name='libro_intro'),
+    
     # Legal
     path('legal/aviso-legal/', TemplateView.as_view(template_name='legal/aviso_legal.html'), name='aviso_legal'),
     path('legal/politica-privacidad/', TemplateView.as_view(template_name='legal/politica_privacidad.html'), name='politica_privacidad'),

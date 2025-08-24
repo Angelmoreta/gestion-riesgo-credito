@@ -22,6 +22,20 @@ def curso(request):
     }
     return render(request, 'curso.html', context)
 
+@login_required
+def libro_riesgo_credito(request):
+    context = {
+        'title': 'Libro: ¿Qué es el riesgo de crédito?'
+    }
+    return render(request, 'libro/intro_riesgo_credito.html', context)
+
+@login_required
+def libro_portada(request):
+    context = {
+        'title': 'Libro: Riesgo de Crédito',
+    }
+    return render(request, 'libro/portada.html', context)
+
 @csrf_exempt
 def log_consent(request):
     if request.method != 'POST':

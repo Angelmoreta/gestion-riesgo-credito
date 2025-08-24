@@ -36,9 +36,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'creditos:analisis_lista' %}">Análisis de Riesgo</a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{% url 'libro_intro' %}">
+                            <span class="badge rounded-pill text-bg-warning me-2">Nuevo</span>
+                            Libro: Riesgo de Crédito
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
+                        <li class="nav-item me-2">
+                            <a class="btn btn-light text-primary fw-semibold" href="{% url 'libro_intro' %}" style="background: linear-gradient(90deg,#ffd54f,#ffecb3); border:none;">
+                                <i class="fa-solid fa-book-open me-1"></i> Acceder al Libro
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <span class="nav-link">Hola, {{ user.username }}</span>
                         </li>

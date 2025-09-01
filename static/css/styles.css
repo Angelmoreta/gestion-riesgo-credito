@@ -1,0 +1,153 @@
+/* Colores principales */
+:root {
+  --primary-color: #003366;     /* Azul oscuro */
+  --white: #FFFFFF;             /* Blanco */
+  --success: #00B04C;           /* Verde */
+  --warning: #FF8A00;           /* Naranja */
+  --light-gray: #F5F5F5;        /* Gris claro */
+  --text-dark: #333333;         /* Gris oscuro */
+  --text-muted: #666666;        /* Gris medio */
+  --light-blue: #E6F0FF;        /* Azul claro */
+  --border-color: #E0E0E0;      /* Bordes grises */
+}
+
+/* Estilos generales */
+body {
+  color: var(--text-dark);
+  background-color: var(--white);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+/* Encabezados */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Barra de navegación */
+.navbar {
+  background-color: var(--primary-color) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand, .nav-link {
+  color: var(--white) !important;
+}
+
+.nav-link:hover {
+  color: var(--light-blue) !important;
+}
+
+/* Botones */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #002244;
+  border-color: #002244;
+}
+
+.btn-success {
+  background-color: var(--success);
+  border-color: var(--success);
+}
+
+.btn-warning {
+  background-color: var(--warning);
+  border-color: var(--warning);
+  color: var(--white);
+}
+
+/* Tarjetas */
+.card {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  background-color: var(--light-blue);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Formularios */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(0, 51, 102, 0.25);
+}
+
+/* Tablas */
+.table thead th {
+  background-color: var(--light-blue);
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--border-color);
+}
+
+/* Badges */
+.badge.bg-warning {
+  background-color: var(--warning) !important;
+  color: var(--white);
+}
+
+/* Footer */
+footer {
+  background-color: var(--light-gray);
+  border-top: 1px solid var(--border-color);
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+
+/* Enlaces */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--warning);
+  text-decoration: underline;
+}
+
+/* Elementos destacados */
+.highlight {
+  background-color: var(--light-blue);
+  border-left: 4px solid var(--primary-color);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+/* Botón de acción principal */
+.btn-action {
+  background: linear-gradient(90deg, var(--success), #009944);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+  background: linear-gradient(90deg, #009944, #00883d);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el botón del libro */
+.btn-book {
+  background: linear-gradient(90deg, var(--warning), #ff9a2e);
+  color: white;
+  border: none;
+  font-weight: 500;
+}
+
+.btn-book:hover {
+  background: linear-gradient(90deg, #e67e00, #ff9a2e);
+  color: white;
+}

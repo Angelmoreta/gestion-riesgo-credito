@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView
 import json
 
 # Create your views here.
@@ -35,6 +36,18 @@ def libro_portada(request):
         'title': 'Libro: Riesgo de Crédito',
     }
     return render(request, 'libro/portada.html', context)
+
+@login_required
+class TestPageView(TemplateView):
+    """
+    Vista para páginas de prueba
+    """
+    template_name = 'test_page.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Páginas de Prueba'
+        return context
 
 @csrf_exempt
 def log_consent(request):

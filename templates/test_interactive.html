@@ -1,0 +1,451 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Prueba de Elementos Interactivos{% endblock %}
+
+{% block extra_css %}
+<style>
+  .test-section {
+    margin: 2rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .test-section:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+  
+  .component-card {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .component-card .card-header {
+    background-color: var(--light-blue);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+  }
+  
+  .component-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  .test-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  @media (max-width: 768px) {
+    .test-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .form-test .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .alert-test {
+    margin-bottom: 1rem;
+  }
+  
+  .toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1100;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Prueba de Elementos Interactivos</h1>
+    <a href="{% url 'home' %}" class="btn btn-outline-primary">
+      <i class="fas fa-arrow-left me-2"></i>Volver al inicio
+    </a>
+  </div>
+  
+  <div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    Esta página está diseñada para probar todos los elementos interactivos de la aplicación.
+  </div>
+  
+  <!-- Formularios -->
+  <div class="test-section">
+    <h2 class="mb-4">1. Formularios</h2>
+    
+    <div class="test-grid">
+      <div class="component-card">
+        <div class="card-header">Formulario de Ejemplo</div>
+        <div class="card-body">
+          <form class="form-test">
+            <div class="form-group">
+              <label class="form-label">Campo de texto</label>
+              <input type="text" class="form-control" placeholder="Escribe algo...">
+              <div class="form-text">Texto de ayuda opcional</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Campo de contraseña</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" placeholder="Contraseña">
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Selector</label>
+              <select class="form-select">
+                <option selected disabled>Selecciona una opción</option>
+                <option>Opción 1</option>
+                <option>Opción 2</option>
+                <option>Opción 3</option>
+              </select>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+              <button type="reset" class="btn btn-outline-secondary">
+                <i class="fas fa-undo me-2"></i>Restablecer
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane me-2"></i>Enviar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="component-card">
+        <div class="card-header">Validación de Formulario</div>
+        <div class="card-body">
+          <form class="needs-validation" novalidate>
+            <div class="form-group">
+              <label class="form-label">Correo Electrónico</label>
+              <input type="email" class="form-control" placeholder="usuario@ejemplo.com" required>
+              <div class="invalid-feedback">
+                Por favor, introduce un correo electrónico válido.
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Contraseña</label>
+              <input type="password" class="form-control" minlength="6" required>
+              <div class="invalid-feedback">
+                La contraseña debe tener al menos 6 caracteres.
+              </div>
+            </div>
+            
+            <button class="btn btn-primary w-100 mt-3" type="submit">Validar y Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Alertas y Notificaciones -->
+  <div class="test-section">
+    <h2 class="mb-4">2. Alertas y Notificaciones</h2>
+    
+    <div class="test-grid">
+      <div class="component-card">
+        <div class="card-header">Alertas</div>
+        <div class="card-body">
+          <div class="alert alert-primary alert-test" role="alert">
+            <i class="fas fa-info-circle me-2"></i>Esta es una alerta informativa.
+          </div>
+          
+          <div class="alert alert-success alert-test" role="alert">
+            <i class="fas fa-check-circle me-2"></i>¡Operación completada con éxito!
+          </div>
+          
+          <div class="alert alert-warning alert-test" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>Advertencia: Este es un mensaje de advertencia.
+          </div>
+          
+          <div class="alert alert-danger alert-test" role="alert">
+            <i class="fas fa-times-circle me-2"></i>¡Error! Algo salió mal. Por favor, inténtalo de nuevo.
+          </div>
+          
+          <div class="alert alert-dismissible fade show alert-info" role="alert">
+            <i class="fas fa-bell me-2"></i>
+            Esta alerta se puede cerrar.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="component-card">
+        <div class="card-header">Notificaciones (Toasts)</div>
+        <div class="card-body">
+          <p class="text-muted mb-3">Haz clic en los botones para mostrar notificaciones:</p>
+          
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <button type="button" class="btn btn-primary btn-sm" id="showToastPrimary">
+              Notificación Primaria
+            </button>
+            <button type="button" class="btn btn-success btn-sm" id="showToastSuccess">
+              Éxito
+            </button>
+            <button type="button" class="btn btn-warning btn-sm" id="showToastWarning">
+              Advertencia
+            </button>
+            <button type="button" class="btn btn-danger btn-sm" id="showToastDanger">
+              Error
+            </button>
+          </div>
+          
+          <div class="toast-container">
+            <!-- Toasts se añadirán aquí dinámicamente -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Componentes Interactivos -->
+  <div class="test-section">
+    <h2 class="mb-4">3. Componentes Interactivos</h2>
+    
+    <div class="test-grid">
+      <div class="component-card">
+        <div class="card-header">Botones</div>
+        <div class="card-body">
+          <h5 class="mb-3">Estilos</h5>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <button class="btn btn-primary">Primario</button>
+            <button class="btn btn-secondary">Secundario</button>
+            <button class="btn btn-success">Éxito</button>
+            <button class="btn btn-danger">Peligro</button>
+            <button class="btn btn-warning">Advertencia</button>
+            <button class="btn btn-info">Información</button>
+          </div>
+          
+          <h5 class="mb-3">Estados</h5>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-primary">Normal</button>
+            <button class="btn btn-primary active">Activo</button>
+            <button class="btn btn-primary" disabled>Deshabilitado</button>
+            <button class="btn btn-primary">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Cargando...
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="component-card">
+        <div class="card-header">Tarjeta Interactiva</div>
+        <div class="card-body p-0">
+          <div class="card h-100 border-0">
+            <div class="card-header bg-light">
+              <h5 class="mb-0">Título de la Tarjeta</h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text">Esta es una tarjeta interactiva con diferentes elementos.</p>
+              
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">Activar función</label>
+                </div>
+                <span class="badge bg-success">Activo</span>
+              </div>
+              
+              <div class="progress mb-3">
+                <div class="progress-bar" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary">Acción Principal</button>
+                <button class="btn btn-outline-secondary">Acción Secundaria</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Navegación -->
+  <div class="test-section">
+    <h2 class="mb-4">4. Navegación</h2>
+    
+    <div class="test-grid">
+      <div class="component-card">
+        <div class="card-header">Pestañas</div>
+        <div class="card-body">
+          <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Inicio</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Perfil</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contacto</button>
+            </li>
+          </ul>
+          <div class="tab-content p-3 border border-top-0 rounded-bottom" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <h5>Contenido de Inicio</h5>
+              <p>Este es el contenido de la pestaña de inicio.</p>
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+              <h5>Perfil de Usuario</h5>
+              <p>Información del perfil del usuario.</p>
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+              <h5>Contacto</h5>
+              <p>Información de contacto.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="component-card">
+        <div class="card-header">Acordeón</div>
+        <div class="card-body p-0">
+          <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  Sección 1
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <p>Contenido de la primera sección del acordeón.</p>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Sección 2
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <p>Contenido de la segunda sección del acordeón.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Toggle password visibility
+  const togglePassword = document.getElementById('togglePassword');
+  if (togglePassword) {
+    togglePassword.addEventListener('click', function() {
+      const password = this.previousElementSibling;
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+  }
+  
+  // Form validation
+  const forms = document.querySelectorAll('.needs-validation');
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+  
+  // Toast notifications
+  const toastTriggers = {
+    'showToastPrimary': 'primary',
+    'showToastSuccess': 'success',
+    'showToastWarning': 'warning',
+    'showToastDanger': 'danger'
+  };
+  
+  Object.entries(toastTriggers).forEach(([id, type]) => {
+    const button = document.getElementById(id);
+    if (button) {
+      button.addEventListener('click', function() {
+        showToast(type);
+      });
+    }
+  });
+  
+  function showToast(type) {
+    const toastContainer = document.querySelector('.toast-container');
+    const toastId = 'toast-' + Date.now();
+    const toastTitle = {
+      'primary': 'Información',
+      'success': '¡Éxito!',
+      'warning': 'Advertencia',
+      'danger': 'Error'
+    }[type];
+    
+    const toastMessage = {
+      'primary': 'Esta es una notificación informativa.',
+      'success': 'La operación se completó correctamente.',
+      'warning': '¡Atención! Esto es una advertencia.',
+      'danger': '¡Error! Algo salió mal.'
+    }[type];
+    
+    const toastIcon = {
+      'primary': 'info-circle',
+      'success': 'check-circle',
+      'warning': 'exclamation-triangle',
+      'danger': 'times-circle'
+    }[type];
+    
+    const toast = document.createElement('div');
+    toast.className = `toast show align-items-center text-white bg-${type} border-0`;
+    toast.role = 'alert';
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.id = toastId;
+    
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="fas fa-${toastIcon} me-2"></i>
+          <strong>${toastTitle}</strong> ${toastMessage}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+      </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      const toastElement = document.getElementById(toastId);
+      if (toastElement) {
+        toastElement.classList.remove('show');
+        setTimeout(() => toastElement.remove(), 150);
+      }
+    }, 5000);
+  }
+});
+</script>
+{% endblock %}
+
+{% endblock %}

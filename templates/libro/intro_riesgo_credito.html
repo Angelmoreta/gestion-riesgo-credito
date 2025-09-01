@@ -1,139 +1,267 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Libro · ¿Qué es el riesgo de crédito?{% endblock %}
+
+{% block extra_css %}
+<style>
+  .chapter-header {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .chapter-nav {
+    position: sticky;
+    top: 1rem;
+  }
+  
+  .chapter-nav .nav-link {
+    color: var(--text-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+    transition: all 0.2s;
+  }
+  
+  .chapter-nav .nav-link:hover, 
+  .chapter-nav .nav-link.active {
+    background-color: var(--light-blue);
+    color: var(--primary-color);
+    font-weight: 500;
+  }
+  
+  .chart-container {
+    position: relative;
+    height: 200px;
+    margin: 1.5rem 0;
+  }
+  
+  .info-box {
+    background-color: var(--light-blue);
+    border-left: 4px solid var(--primary-color);
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0 0.25rem 0.25rem 0;
+  }
+  
+  .info-box h5 {
+    color: var(--primary-color);
+    margin-top: 0;
+  }
+  
+  @media (max-width: 991.98px) {
+    .chapter-nav {
+      position: static;
+      margin-bottom: 2rem;
+    }
+    
+    .chart-container {
+      height: 250px;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="py-5">
-  <div class="container">
-    <!-- Breadcrumbs -->
-    <nav aria-label="breadcrumb" class="mb-3">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'libro_portada' %}">Libro</a></li>
-        <li class="breadcrumb-item active" aria-current="page">¿Qué es el riesgo de crédito?</li>
-      </ol>
-    </nav>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="h3 mb-0">¿Qué es el riesgo de crédito? Conceptos, medición y regulación contemporánea</h1>
-      <div>
-        <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-sm">Salir</a>
-      </div>
-    </div>
-
-    <div class="row g-4">
-      <div class="col-lg-8">
-        <div class="card shadow-sm mb-4">
-          <div class="card-body">
-            <p>El riesgo de crédito es la posibilidad de sufrir pérdidas por el incumplimiento (o deterioro significativo de la calidad crediticia) de una contraparte. En banca, es el riesgo central del negocio: afecta a préstamos, líneas de crédito, garantías, derivados y posiciones con liquidación diferida. El Marco de Basilea lo incorpora como uno de los pilares de capital regulatorio, estableciendo metodologías estandarizadas e internas para cuantificar requerimientos y controles prudenciales. Banco de Pagos Internacionales.</p>
-            <p>Desde la perspectiva de gestión interna, el riesgo de crédito se descompone en tres bloques clásicos: probabilidad de incumplimiento (PD), pérdida dado el incumplimiento (LGD) y exposición al incumplimiento (EAD). Bajo Basilea, las entidades pueden optar por el enfoque estandarizado (ponderaciones reguladas por tipo de contraparte/colateral) o por el enfoque IRB (Internal Ratings-Based), donde PD, LGD y EAD provienen de modelos internos sujetos a estricta gobernanza y validación supervisora. Los textos consolidados del Basel Framework y sus enmiendas técnicas recientes detallan definiciones, tratamientos especiales (p. ej., specialised lending) y requisitos de modelización.</p>
-            <p>En la Unión Europea, la EBA desarrolla normas técnicas, directrices y ejercicios de benchmarking para armonizar prácticas entre bancos, con especial foco en el cálculo de capital y la reparación de modelos IRB. Entre los instrumentos más influyentes destacan las <em>Guidelines on loan origination and monitoring</em>, las <em>Guidelines on the application of the definition of default</em>, y los <em>credit risk benchmarking exercises</em>.</p>
-            <p>El cómputo contable del riesgo se rige por IFRS 9, que introdujo el modelo de pérdidas crediticias esperadas (ECL) para reconocer deterioros de manera más oportuna que bajo IAS 39. IFRS 9 distingue entre ECL a 12 meses y ECL de vida, con reclasificación por “etapas” en función del aumento significativo del riesgo de crédito desde el reconocimiento inicial.</p>
-          </div>
+<div class="container py-4">
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light p-3 rounded">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Inicio</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'libro:portada' %}" class="text-decoration-none">Libro</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Introducción</li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h1 class="h4 mb-0">¿Qué es el riesgo de crédito? Conceptos, medición y regulación contemporánea</h1>
         </div>
-
-        <div class="card shadow-sm mb-4">
-          <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h2 class="h6 mb-0">IFRS 9: Etapas y pérdidas esperadas</h2>
-            <div class="d-flex gap-2 align-items-center">
-              <label class="form-label mb-0 small">PD 12m (%)</label>
-              <input type="range" id="sliderPD12" class="form-range" min="0.5" max="10" step="0.5" value="2">
+        <div class="card-body">
+          <p class="lead">El riesgo de crédito es la posibilidad de sufrir pérdidas por el incumplimiento (o deterioro significativo de la calidad crediticia) de una contraparte.</p>
+          
+          <p>En banca, es el riesgo central del negocio: afecta a préstamos, líneas de crédito, garantías, derivados y posiciones con liquidación diferida. El Marco de Basilea lo incorpora como uno de los pilares de capital regulatorio, estableciendo metodologías estandarizadas e internas para cuantificar requerimientos y controles prudenciales. <em>Banco de Pagos Internacionales</em>.</p>
+          
+          <div class="info-box">
+            <h5>Componentes clave del riesgo de crédito</h5>
+            <p class="mb-0">El riesgo de crédito se descompone en tres bloques fundamentales: <strong>probabilidad de incumplimiento (PD)</strong>, <strong>pérdida dado el incumplimiento (LGD)</strong> y <strong>exposición al incumplimiento (EAD)</strong>.</p>
+          </div>
+          
+          <p>Desde la perspectiva de gestión interna, el riesgo de crédito se descompone en tres bloques clásicos: probabilidad de incumplimiento (PD), pérdida dado el incumplimiento (LGD) y exposición al incumplimiento (EAD). Bajo Basilea, las entidades pueden optar por el enfoque estandarizado (ponderaciones reguladas por tipo de contraparte/colateral) o por el enfoque IRB (Internal Ratings-Based), donde PD, LGD y EAD provienen de modelos internos sujetos a estricta gobernanza y validación supervisora. Los textos consolidados del Basel Framework y sus enmiendas técnicas recientes detallan definiciones, tratamientos especiales (p. ej., specialised lending) y requisitos de modelización.</p>
+          
+          <h3 class="h5 mt-4 mb-3">Enfoques regulatorios</h3>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="card h-100 border-primary">
+                <div class="card-body">
+                  <h4 class="h6 text-primary">Enfoque Estandarizado</h4>
+                  <p class="small mb-0">Ponderaciones fijas según tipo de contraparte y calificación crediticia.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100 border-success">
+                <div class="card-body">
+                  <h4 class="h6 text-success">Enfoque IRB</h4>
+                  <p class="small mb-0">Modelos internos con validación supervisora para PD, LGD y EAD.</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="card-body">
-            <p class="mb-2 small text-muted">Mueve el control para ver cómo cambia la ECL a 12 meses (Stage 1) frente a ECL de vida (Stage 2–3) en una cartera simplificada.</p>
-            <canvas id="chartIFRS" height="120"></canvas>
-          </div>
+          
+          <p>En la Unión Europea, la EBA desarrolla normas técnicas, directrices y ejercicios de benchmarking para armonizar prácticas entre bancos, con especial foco en el cálculo de capital y la reparación de modelos IRB. Entre los instrumentos más influyentes destacan las <em>Guidelines on loan origination and monitoring</em>, las <em>Guidelines on the application of the definition of default</em>, y los <em>credit risk benchmarking exercises</em>.</p>
+          
+          <p>El cómputo contable del riesgo se rige por IFRS 9, que introdujo el modelo de pérdidas crediticias esperadas (ECL) para reconocer deterioros de manera más oportuna que bajo IAS 39. IFRS 9 distingue entre ECL a 12 meses y ECL de vida, con reclasificación por "etapas" en función del aumento significativo del riesgo de crédito desde el reconocimiento inicial.</p>
         </div>
-
-        <div class="card shadow-sm mb-4">
-          <div class="card-header bg-white">
-            <h2 class="h6 mb-0">Impacto macro en PD (escenarios)</h2>
-          </div>
-          <div class="card-body">
-            <p class="small text-muted">Escenarios de estrés (base/adverso/severo) y su efecto en la PD anualizada.</p>
-            <canvas id="chartStress" height="120"></canvas>
-          </div>
-        </div>
-
       </div>
 
-      <div class="col-lg-4">
-        <div class="card shadow-sm mb-4">
-          <div class="card-header bg-white">
-            <h2 class="h6 mb-0">Descomposición PD/LGD/EAD</h2>
-          </div>
-          <div class="card-body">
-            <canvas id="chartPLE" height="240"></canvas>
-            <p class="mt-3 small text-muted">La pérdida esperada (EL) ≈ PD × LGD × EAD. Este gráfico muestra pesos relativos de una cartera ejemplo.</p>
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+          <h2 class="h5 mb-2 mb-md-0">IFRS 9: Etapas y pérdidas esperadas</h2>
+          <div class="d-flex align-items-center mt-2 mt-md-0">
+            <label class="form-label mb-0 me-2 small">PD 12m (%): <span id="pdValue">2.0</span>%</label>
+            <input type="range" id="sliderPD12" class="form-range" min="0.5" max="10" step="0.5" value="2" style="max-width: 200px;">
           </div>
         </div>
-
-        <div class="card shadow-sm">
-          <div class="card-header bg-white">
-            <h2 class="h6 mb-0">Bibliografía seleccionada (2019–2025)</h2>
+        <div class="card-body">
+          <p class="mb-3 small text-muted">Mueve el control para ver cómo cambia la ECL a 12 meses (Stage 1) frente a ECL de vida (Stage 2–3) en una cartera simplificada.</p>
+          <div class="chart-container">
+            <canvas id="chartIFRS"></canvas>
           </div>
-          <div class="card-body">
-            <ul class="small mb-0">
-              <li>BCBS (2025). Principles for the management of credit risk. BIS.</li>
-              <li>BIS. Basel Framework (sitio y compendio PDF).</li>
-              <li>EBA. Guidelines (definición de default, originación y monitoreo, benchmarking).</li>
-              <li>IFRS Foundation/IASB. PIR IFRS 9—Impairment; definiciones de ECL.</li>
-              <li>Revisiones ML en riesgo de crédito (2015–2024): boosting, WOE, explainability.</li>
-            </ul>
-          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sidebar Navigation -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+          <h2 class="h5 mb-0">Contenido del capítulo</h2>
+        </div>
+        <div class="card-body p-0">
+          <nav class="nav flex-column chapter-nav">
+            <a href="#" class="nav-link active">1.1 Introducción al riesgo de crédito</a>
+            <a href="#" class="nav-link">1.2 Componentes del riesgo de crédito</a>
+            <a href="#" class="nav-link">1.3 Marco regulatorio: Basilea</a>
+            <a href="#" class="nav-link">1.4 IFRS 9 y ECL</a>
+            <a href="#" class="nav-link">1.5 Gestión del riesgo de crédito</a>
+          </nav>
+        </div>
+      </div>
+      
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h2 class="h5 mb-0">Recursos adicionales</h2>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2">
+              <a href="#" class="text-decoration-none d-flex align-items-center">
+                <i class="fas fa-file-pdf text-danger me-2"></i>
+                <span>Guía de Basilea III</span>
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="#" class="text-decoration-none d-flex align-items-center">
+                <i class="fas fa-external-link-alt text-primary me-2"></i>
+                <span>Documentación EBA</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="text-decoration-none d-flex align-items-center">
+                <i class="fas fa-calculator text-success me-2"></i>
+                <span>Calculadora de riesgo</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
-</section>
+</div>
+{% endblock %}
 
-<!-- Chart.js CDN (aislado a esta página) -->
+{% block extra_js %}
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-(function(){
-  // Utilidades
-  function fmtPct(x){ return (x*100).toFixed(1) + '%'; }
-
-  // 1) Donut PD/LGD/EAD (pesos relativos normalizados)
-  const ctxPLE = document.getElementById('chartPLE');
-  const pleData = { labels: ['PD', 'LGD', 'EAD'], datasets: [{ data: [0.25, 0.35, 0.40], backgroundColor: ['#0d6efd','#20c997','#ffc107'] }] };
-  new Chart(ctxPLE, { type: 'doughnut', data: pleData, options: { plugins: { legend: { position: 'bottom' } } } });
-
-  // 2) IFRS9 Stages/ECL con control PD12
-  const ctxIFRS = document.getElementById('chartIFRS');
-  const slider = document.getElementById('sliderPD12');
-  // Supuestos simples
-  let lgd = 0.40; // 40%
-  let ead = 100;  // 100 unidades
-  function ecl12(pd12){ return pd12 * lgd * ead; }
-  function eclLife(pd12){ // proxy muy simplificada
-    const mult = 3.5; // vida media y migración a Stage 2/3
-    return Math.min(1, pd12 * mult) * lgd * ead;
-  }
+document.addEventListener('DOMContentLoaded', function() {
+  // Formatear porcentajes
+  const fmtPct = x => (x * 100).toFixed(1).replace(/\.?0+$/, '') + '%';
+  
+  // 1) Gráfico IFRS 9
+  const ctxIFRS = document.getElementById('chartIFRS').getContext('2d');
+  
+  // 100 unidades
+  const ecl12 = pd12 => 100 * pd12 * 0.45 * 0.75; // PD * LGD * EAD
+  const eclLife = pd12 => {
+    const pdLife = 1 - Math.pow(1 - pd12/100, 3); // Aprox. 3 años de vida
+    return 100 * pdLife * 0.45 * 0.75; // PD * LGD * EAD
+  };
+  
   const ifrsChart = new Chart(ctxIFRS, {
     type: 'bar',
-    data: { labels: ['ECL 12m (Stage 1)','ECL Vida (Stage 2–3)'], datasets: [{ label: 'Pérdida esperada', data: [ecl12(0.02), eclLife(0.02)], backgroundColor: ['#6f42c1','#dc3545'] }] },
-    options: { plugins: { legend: { display:false } }, scales: { y: { beginAtZero: true, title: { display:true, text:'Unidades' } } } }
+    data: { 
+      labels: ['ECL 12m (Stage 1)','ECL Vida (Stage 2–3)'], 
+      datasets: [{ 
+        label: 'Pérdida esperada', 
+        data: [ecl12(2), eclLife(2)], 
+        backgroundColor: ['var(--primary-color)','var(--secondary-green)'],
+        borderRadius: 4
+      }] 
+    },
+    options: { 
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { 
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.parsed.y.toFixed(2) + ' unidades';
+            }
+          }
+        }
+      }, 
+      scales: { 
+        y: { 
+          beginAtZero: true, 
+          title: { 
+            display: true, 
+            text: 'Unidades',
+            font: { weight: 'bold' }
+          } 
+        } 
+      } 
+    }
   });
-  slider.addEventListener('input', function(){
-    const pd12 = parseFloat(slider.value)/100; // slider en %
-    ifrsChart.data.datasets[0].data = [ecl12(pd12), eclLife(pd12)];
+  
+  // Actualizar gráfico al mover el slider
+  const slider = document.getElementById('sliderPD12');
+  const pdValue = document.getElementById('pdValue');
+  
+  slider.addEventListener('input', function() {
+    const value = parseFloat(this.value);
+    pdValue.textContent = value.toFixed(1);
+    
+    // Actualizar datos del gráfico
+    ifrsChart.data.datasets[0].data = [
+      ecl12(value),
+      eclLife(value)
+    ];
+    
     ifrsChart.update();
   });
-
-  // 3) Escenarios de estrés para PD
-  const ctxStress = document.getElementById('chartStress');
-  const months = ['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'];
-  const base = months.map((_,i)=> 0.015 + 0.0005*i);      // 1.5% -> ~2.0%
-  const adverse = months.map((_,i)=> 0.02 + 0.0012*i);    // 2.0% -> ~3.3%
-  const severe = months.map((_,i)=> 0.03 + 0.0018*i);     // 3.0% -> ~5.1%
-  new Chart(ctxStress, {
-    type: 'line',
-    data: { labels: months, datasets: [
-      { label: 'Base', data: base, borderColor:'#0d6efd', fill:false, tension:0.2 },
-      { label: 'Adverso', data: adverse, borderColor:'#ffc107', fill:false, tension:0.2 },
-      { label: 'Severo', data: severe, borderColor:'#dc3545', fill:false, tension:0.2 },
-    ]},
-    options: { scales: { y: { ticks: { callback: v => (v*100).toFixed(1)+'%' } } }, plugins: { tooltip: { callbacks: { label: ctx => ctx.dataset.label+': '+fmtPct(ctx.parsed.y) } } } }
+  
+  // Inicializar tooltips de Bootstrap
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
   });
-})();
+});
 </script>
 {% endblock %}

@@ -17,7 +17,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
                 <i class="fas fa-shield-alt me-2"></i>Gestión de Riesgo
@@ -38,9 +38,8 @@
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="{% url 'libro_intro' %}">
-                            <span class="badge rounded-pill text-bg-warning me-2">Nuevo</span>
-                            Libro: Riesgo de Crédito
+                        <a class="nav-link" href="{% url 'libro:portada' %}">
+                            <span class="badge bg-warning">Nuevo</span> Libro
                         </a>
                     </li>
                     {% endif %}
@@ -48,19 +47,29 @@
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item me-2">
-                            <a class="btn btn-light text-primary fw-semibold" href="{% url 'libro_intro' %}" style="background: linear-gradient(90deg,#ffd54f,#ffecb3); border:none;">
+                            <a class="btn btn-book" href="{% url 'libro:portada' %}">
                                 <i class="fa-solid fa-book-open me-1"></i> Acceder al Libro
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <span class="nav-link">Hola, {{ user.username }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>{{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                                    <i class="fas fa-cog me-2"></i>Administración
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión
+                                </a></li>
+                            </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+                            <a class="btn btn-outline-light me-2" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Iniciar sesión
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
@@ -69,7 +78,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="container">
+    <main class="container mb-5">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -79,20 +88,21 @@
             {% endfor %}
         {% endif %}
 
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-light mt-5 py-4">
-        <div class="container text-center">
-            <p class="mb-0">&copy; {% now "Y" %} Gestión de Riesgo de Crédito. Todos los derechos reservados.</p>
-            <p class="mb-0">
-                <a href="{% url 'aviso_legal' %}" class="me-3">Aviso Legal</a>
-                <a href="{% url 'politica_privacidad' %}" class="me-3">Política de Privacidad</a>
-                <a href="{% url 'politica_cookies' %}" class="me-3">Política de Cookies</a>
-                <a href="#" id="openCookiePrefs">Configurar cookies</a>
-            </p>
+    <footer class="mt-auto">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; {% now "Y" %} Gestión de Riesgo de Crédito. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalAvisoLegal" class="text-decoration-none me-3">Aviso Legal</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalPrivacidad" class="text-decoration-none">Política de Privacidad</a>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -172,194 +182,10 @@
       </div>
     </div>
 
-    <!-- Política de Cookies -->
-    <div class="modal fade" id="modalCookies" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Política de Cookies</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body text-start">
-            <h6>1. Uso de cookies</h6>
-            <p>Este sitio web utiliza cookies propias y de terceros con la finalidad de mejorar la experiencia del usuario, analizar la navegación y elaborar estadísticas mediante el servicio Google Analytics.</p>
-            <h6>2. Definición</h6>
-            <p>Las cookies son pequeños archivos que se almacenan en el dispositivo del usuario y permiten reconocer al navegador cuando interactúa con la página web.</p>
-            <h6>3. Tipos de cookies utilizadas</h6>
-            <ul>
-              <li><strong>Cookies técnicas:</strong> necesarias para el correcto funcionamiento de la web.</li>
-              <li><strong>Cookies de análisis:</strong> permiten medir y analizar el tráfico de la web (Google Analytics).</li>
-            </ul>
-            <h6>4. Consentimiento</h6>
-            <p>Al acceder al sitio web, el usuario visualizará un banner informativo para aceptar, rechazar o configurar sus preferencias. El consentimiento podrá revocarse en cualquier momento.</p>
-            <h6>5. Gestión y desactivación</h6>
-            <p>El usuario puede configurar su navegador para rechazar el uso de cookies, aunque ello podría limitar funcionalidades.</p>
-            <h6>6. Terceros proveedores</h6>
-            <p>Para el análisis del tráfico se utiliza Google Analytics (Google LLC, EE. UU.). El tratamiento implica transferencia internacional de datos bajo las Cláusulas Contractuales Tipo.</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Banner de Cookies -->
-    <div id="cookieBanner" class="position-fixed bottom-0 start-0 end-0 p-3" style="z-index:1080; display:none;">
-      <div class="container">
-        <div class="card shadow-sm">
-          <div class="card-body d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-3">
-            <div class="flex-fill">
-              <strong>Usamos cookies</strong> para mejorar la experiencia, analizar el tráfico y fines estadísticos. Puedes aceptar todas, rechazarlas o configurar tus preferencias. Más info en nuestra <a href="{% url 'politica_cookies' %}">Política de Cookies</a>.
-            </div>
-            <div class="d-flex gap-2 ms-lg-3">
-              <button id="btnCookiesReject" class="btn btn-outline-secondary">Rechazar</button>
-              <button id="btnCookiesCustomize" class="btn btn-outline-primary">Configurar</button>
-              <button id="btnCookiesAccept" class="btn btn-primary">Aceptar todas</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal Preferencias de Cookies -->
-    <div class="modal fade" id="cookiePrefsModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Preferencias de Cookies</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3 p-3 border rounded">
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="cookieNecessary" checked disabled>
-                <label class="form-check-label" for="cookieNecessary"><strong>Necesarias</strong> (siempre activas)</label>
-              </div>
-              <small class="text-muted">Requeridas para el funcionamiento básico del sitio (p. ej., inicio de sesión, seguridad).</small>
-            </div>
-            <div class="mb-3 p-3 border rounded">
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="cookieAnalytics">
-                <label class="form-check-label" for="cookieAnalytics"><strong>Analíticas</strong> (Google Analytics)</label>
-              </div>
-              <small class="text-muted">Nos ayudan a entender el uso del sitio para mejorarlo. Se activan sólo con tu consentimiento.</small>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" id="btnSaveCookiePrefs">Guardar preferencias</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
-    <!-- Cookie Consent JS -->
-    <script>
-      (function() {
-        const CONSENT_KEY = 'cookieConsent.v1';
-        const GA_MEASUREMENT_ID = 'G-HN8V1MN3RY'; // ID configurado para esta web
-        const CONSENT_VALID_DAYS = 365; // caducidad 12 meses
-        let gaLoaded = false;
-
-        function getConsent() {
-          try { return JSON.parse(localStorage.getItem(CONSENT_KEY)); } catch(e) { return null; }
-        }
-        function setConsent(obj) {
-          localStorage.setItem(CONSENT_KEY, JSON.stringify({
-            necessary: true,
-            analytics: !!obj.analytics,
-            ts: new Date().toISOString()
-          }));
-        }
-        function isExpired(c) {
-          if (!c || !c.ts) return true;
-          const ts = new Date(c.ts);
-          const now = new Date();
-          const diffDays = (now - ts) / (1000 * 60 * 60 * 24);
-          return diffDays >= CONSENT_VALID_DAYS;
-        }
-        function showBanner(show) {
-          document.getElementById('cookieBanner').style.display = show ? 'block' : 'none';
-        }
-        function loadGA() {
-          if (gaLoaded || !GA_MEASUREMENT_ID) return;
-          gaLoaded = true;
-          const s = document.createElement('script');
-          s.async = true;
-          s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-          document.head.appendChild(s);
-          const inline = document.createElement('script');
-          inline.innerHTML = `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${GA_MEASUREMENT_ID}', { 'anonymize_ip': true });`;
-          document.head.appendChild(inline);
-        }
-        function applyConsent(c) {
-          if (c && c.analytics === true && !isExpired(c)) {
-            loadGA();
-          }
-        }
-        function logConsent(action, analytics) {
-          try {
-            fetch('{% url 'api_consent' %}', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action, analytics: !!analytics })
-            });
-          } catch (e) { /* noop */ }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-          const consent = getConsent();
-          if (!consent || isExpired(consent)) {
-            showBanner(true);
-          } else {
-            applyConsent(consent);
-          }
-
-          document.getElementById('btnCookiesAccept').addEventListener('click', function() {
-            setConsent({ analytics: true });
-            applyConsent(getConsent());
-            showBanner(false);
-            logConsent('accept', true);
-          });
-          document.getElementById('btnCookiesReject').addEventListener('click', function() {
-            setConsent({ analytics: false });
-            showBanner(false);
-            logConsent('reject', false);
-          });
-          document.getElementById('btnCookiesCustomize').addEventListener('click', function() {
-            const modal = new bootstrap.Modal(document.getElementById('cookiePrefsModal'));
-            const c = getConsent();
-            document.getElementById('cookieAnalytics').checked = c ? !!c.analytics : false;
-            modal.show();
-          });
-          document.getElementById('openCookiePrefs').addEventListener('click', function(e) {
-            e.preventDefault();
-            const modal = new bootstrap.Modal(document.getElementById('cookiePrefsModal'));
-            const c = getConsent();
-            document.getElementById('cookieAnalytics').checked = c ? !!c.analytics : false;
-            modal.show();
-          });
-          document.getElementById('btnSaveCookiePrefs').addEventListener('click', function() {
-            const analytics = document.getElementById('cookieAnalytics').checked;
-            setConsent({ analytics });
-            applyConsent(getConsent());
-            const modalEl = document.getElementById('cookiePrefsModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            modal.hide();
-            showBanner(false);
-            logConsent('update', analytics);
-          });
-        });
-      })();
-    </script>
-
-    <!-- Custom JS -->
-    <script src="{% static 'js/main.js' %}"></script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

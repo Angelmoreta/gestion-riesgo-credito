@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # Local apps
     'clientes.apps.ClientesConfig',
     'creditos.apps.CreditosConfig',
+    'libro.apps.LibroConfig',  # Añadido para la aplicación libro
 ]
 
 MIDDLEWARE = [

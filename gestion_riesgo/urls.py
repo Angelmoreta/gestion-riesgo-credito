@@ -20,6 +20,7 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 
 # Import views
 from . import views
@@ -41,18 +42,23 @@ urlpatterns = [
     # Apps
     path('clientes/', include('clientes.urls', namespace='clientes')),
     path('creditos/', include('creditos.urls', namespace='creditos')),
+    path('libro/', include('libro.urls', namespace='libro')),  # Actualizado para usar la app libro
     
     # API
     path('api/consent/', views.log_consent, name='api_consent'),
-    
-    # Libro privado
-    path('libro/', views.libro_portada, name='libro_portada'),
-    path('libro/intro-riesgo-credito/', views.libro_riesgo_credito, name='libro_intro'),
     
     # Legal
     path('legal/aviso-legal/', TemplateView.as_view(template_name='legal/aviso_legal.html'), name='aviso_legal'),
     path('legal/politica-privacidad/', TemplateView.as_view(template_name='legal/politica_privacidad.html'), name='politica_privacidad'),
     path('legal/politica-cookies/', TemplateView.as_view(template_name='legal/politica_cookies.html'), name='politica_cookies'),
+    
+    # Test pages - wrapped in login_required using the method_decorator
+    path('test-responsive/', 
+         login_required(TemplateView.as_view(template_name='test_responsive.html')), 
+         name='test_responsive'),
+    path('test-interactive/', 
+         login_required(TemplateView.as_view(template_name='test_interactive.html')), 
+         name='test_interactive'),
 ]
 
 # Serve media files in development
